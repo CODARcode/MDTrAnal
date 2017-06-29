@@ -1,7 +1,7 @@
 %% Set-up
 % step size for timestamp
 step = 100;
-load data/nt-ice_md-normal.mat
+load data/nt-ice_md-normal_new.mat
 % reformat data
 [x, y, z] = size(trace);
 t3 = reshape(trace, [x*y,z]);
