@@ -1,4 +1,4 @@
-function [target, time_stamps] = md_compress(trace,sampling_rate)
+function [target, time_stamps] = md_compress_acc(trace,sampling_rate)
 
     % reformat data
     [x, y, z] = size(trace);
@@ -11,8 +11,11 @@ function [target, time_stamps] = md_compress(trace,sampling_rate)
     n_dim = 2;
     ps = c(:,1:n_dim) * s(1:n_dim, 1:n_dim);
     psd = ps(1:(x-1),1:n_dim) - ps(2:x, 1:n_dim);
-    psdu = sum(abs(psd'))
-    prob_dist = (psdu / sum(psdu));
+    psdd = psd(1:(x-2)) - psd(2:(x-1))
+    psdu = sum(abs(psd'));
+    psddu = sum(abs(psdd)); % accelerations
+    %prob_dist = (psdu / sum(psdu));
+    prob_dist = (abs(psdd) / sum(psddu))
 
 
     %% Sub-sampling
@@ -24,8 +27,8 @@ function [target, time_stamps] = md_compress(trace,sampling_rate)
     target(1,:,:) = trace(1,:,:);
     time_stamps(1) = 1;
     t_idx = 2;
-    for i=2:x
-        total = total + prob_dist(i-1);
+    for i=3:x
+        total = total + prob_dist(i-2);
         if(total > 1 / double(sampling_entries - 1))
             target(t_idx,:,:) = trace(i,:,:);
             time_stamps(t_idx) = i;
