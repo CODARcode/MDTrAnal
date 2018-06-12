@@ -4,5 +4,5 @@ MD trajectories compression and analysis
 * [Data](https://goo.gl/8yX8rM)
 
 ## Test Instruction
-* Please set the PYTHONPATH environment variable to lib folder. For instance, on the repo root directory, `export PYTHONPATH=\`pwd\`/lib`
+* Please set the PYTHONPATH environment variable to lib folder. For instance, on the repo root directory, `export PYTHONPATH=``pwd``/lib`
 * Example use case is in src/md_compress_adaptive.py
