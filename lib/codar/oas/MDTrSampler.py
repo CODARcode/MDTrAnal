@@ -22,9 +22,9 @@ from random import uniform
 import matplotlib
 import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import normalize
 
 from pprint import pprint
-
 
 def  svd_wrapper (Y, k, method='svds'):
     if method is 'svds':
@@ -42,7 +42,6 @@ def  svd_wrapper (Y, k, method='svds'):
         Vt = Vt[:k, :]
         
     return Ut, St, Vt
-
 
 class WeightedReservoirSampler:
     def __init__(self, reservoir_size):
@@ -100,10 +99,16 @@ class MDTrSampler:
         Ct = np.concatenate( (self.Btp, t2), axis = 1)
         Ct = Ct[:, ~(Ct==0).all(0)]
 
-        Ut, St, Vt = svd_wrapper(Ct, self.l) #SVD_l(matrix)
-        Ut_l = Ut[:, :self.l]
-        St_l = St[:self.l] - St[self.l-1] # to be adaptive, added singular substraction
-        Vt_l = Vt[:self.l, -n_t:]
+        if( self.bq_index < self.l):
+            Ut, St, Vt = svd_wrapper(Ct, self.bq_index) #SVD_l(matrix)
+            Ut_l = Ut[:, :self.bq_index]
+            St_l = St[:self.bq_index] - St[self.bq_index-1] # to be adaptive, added singular substraction
+            Vt_l = Vt[:self.bq_index, -n_t:]
+        else:
+            Ut, St, Vt = svd_wrapper(Ct, self.l) #SVD_l(matrix)
+            Ut_l = Ut[:, :self.l]
+            St_l = St[:self.l] - St[self.l-1] # to be adaptive, added singular substraction
+            Vt_l = Vt[:self.l, -n_t:]
         self.Btp= np.dot(Ut_l, np.diag(St_l))
 
         return Ut_l, St_l, Vt_l
@@ -143,7 +148,12 @@ class MDTrSampler:
             for i in range(2,self.bq_index):
                 self.strm_smplr.add(psddu[i-2], [sidx+i, self.bq[i,:,:]])
         else:
-            c =  np.concatenate( (self.last_Vt, VTt.T), axis = 0)
+            #pprint([self.last_Vt.shape, VTt.T.shape])
+            if self.last_Vt.shape[1] == VTt.T.shape[1] :
+                c =  np.concatenate( (self.last_Vt, VTt.T), axis = 0)
+            else:
+                c =  np.concatenate( (self.last_Vt[:,:VTt.shape[0]], VTt.T), axis = 0)
+            #pprint(c.shape)
             nmpsdm, psddu, prob_dist = self.traj_char(c, s)
             sidx = self.total_samples - self.bq_index
             for i in range(0,self.bq_index):
@@ -160,7 +170,7 @@ class MDTrSampler:
 
     def finalize(self):
         if self.bq_index != 0:
-            self.adaptive_sampling_updates()
+            self.adaptive_sampling_update()
             self.bq_index = 0
 
     def get_sampled_ts(self): # return sorted list of timestamp
@@ -183,3 +193,13 @@ class MDTrSampler:
             return sorted([ self.strm_smplr.reservoir[i][1] for i in range(self.total_samples)])
         else:
             return sorted([ self.strm_smplr.reservoir[i][1] for i in range(self.n_samples)])
+
+    def get_optimal_view_angle(self, Btp=None):
+        if Btp is None: # for streaming case
+          UT= normalize(self.Btp[:,3:6], axis=0, norm='l2')
+          return normalize(np.ones((1, self.Btp.shape[0])) @ UT, norm='l2')[0]
+        else: # for batch
+          UT= normalize(Btp[:,3:6], axis=0, norm='l2')
+          return normalize(np.ones((1, Btp.shape[0])) @ UT, norm='l2')[0]
+
+
