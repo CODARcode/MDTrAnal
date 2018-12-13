@@ -6,4 +6,4 @@ services:
 before_install:
   - docker build -t chimbuko/oas .
 
-script: docker run -it chimbuko/oas bash -c "make test2"
+script: docker run -it chimbuko/oas bash -c "make test"
