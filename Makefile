@@ -5,6 +5,7 @@ TEST_SCRIPT_NAME = run_tests.sh
 .PHONY: test
 
 default: build-test-script
+	cd work/orient-v3 && make -f GNUmakefile
 
 build-test-script:
 	echo '#!/bin/bash' > $(TEST_DIR)/$(TEST_SCRIPT_NAME)
