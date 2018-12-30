@@ -120,9 +120,10 @@ end for
                 out =  open("{0}/preprocess.sh".format(tmpdirname),"wt") 
                 out.write("""
 #!/bin/bash
-cat out-all.xyz | /mnt/c/Users/shyyoo/repos/gh/MDTrAnal/work/orient-v3/orient.exe > out-all-oriented.xyz
+cat out-all.xyz | ../../work/orient-v3/orient.exe > out-all-oriented.xyz
 obabel -ixyz out-all-oriented.xyz -opdb -O out-all.pdb
 """)
+                out.close()
                          
                 runProgram(progName="/bin/bash", argStr=" preprocess.sh", working_dir=tmpdirname, logger=self.logger)
                 runProgram(progName="java", argStr=" -jar {0} -g {1}x{2} -s angle-script.jm -ixLo out-all.pdb".format(self.cfg['jmol.jar'], self.cfg['width'], self.cfg['height']), working_dir=tmpdirname, logger=self.logger)
