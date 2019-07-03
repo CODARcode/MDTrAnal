@@ -3,7 +3,7 @@ import math
 
 from pprint import pprint
 from codar.oas.MDTrSampler import MDTrSampler
-import codar.utils.pyAdios as AD
+import codar.utils.pyAdios as ADIOS
 
 from mpi4py import MPI
 
@@ -12,8 +12,8 @@ rank = comm.Get_rank()
 size = comm.Get_size()
 
 # For SST ending, replace 'BP' with 'SST'.
-reader = AD.pyAdios('BP')
-reader.open('../src/nwchem_xyz.bp', AD.OpenMode.READ)
+reader = ADIOS.pyAdios('BP')
+reader.open('../src/nwchem_xyz.bp', ADIOS.OpenMode.READ)
 
 # to get available attributes
 #attrs = reader.available_attributes()
