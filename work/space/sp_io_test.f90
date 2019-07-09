@@ -9,7 +9,7 @@ program sp_io_test
     
     ! local data array
     real*8, dimension(:), allocatable :: wlx, wly, wlz, slx, sly, slz 
-    integer*8, dimension(:), allocatable :: wid, sid
+    integer*4, dimension(:), allocatable :: wid, sid
 
 
     ! initilaize MPI

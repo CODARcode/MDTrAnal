@@ -9,10 +9,10 @@ override ADIOS2_FLIB=`${ADIOS2_DIR}/bin/adios2-config --fortran-libs`
 
 all: adios2
 
-sp_io.o: sp_io.f90
+sp_io.o: sp_io.f
 	${FC} ${FFLAGS} -c ${ADIOS2_FINC} $<
 
-sp_io_vars.o: sp_io_vars.f90
+sp_io_vars.o: sp_io_vars.f
 	${FC} ${FFLAGS} -c ${ADIOS2_FINC} $<
 
 adios2: sp_io_vars.o sp_io.o sp_io_test.f90
