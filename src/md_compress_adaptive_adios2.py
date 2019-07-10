@@ -11,9 +11,15 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
-# For SST ending, replace 'BP' with 'SST'.
-reader = ADIOS.pyAdios('BP')
-reader.open('../src/nwchem_xyz.bp', ADIOS.OpenMode.READ)
+#bpfile = '../src/nwchem_xyz.bp'
+engine = 'SST'
+bpfile = '/Codar/nwchem-1/QA/tests/ethanol/nwchem_xyz.bp'
+
+# For SST engine, replace 'BP' with 'SST'.
+print('Start analysis: {}'.format(rank))
+reader = ADIOS.pyAdios(engine)
+reader.open(bpfile, ADIOS.OpenMode.READ)
+
 
 # to get available attributes
 #attrs = reader.available_attributes()
@@ -28,7 +34,7 @@ if rank == 0:
 # Q: in the variables, there are 'NATOMS', 'OFFSET' and 'TATOMS'.
 #    is one of them related to natoms? It seems 'TATOMS' matches with the
 #    'ntoms', i.e. the length of 1D array.
-natoms = avars['LX'].shape[0]
+natoms = avars['WLX'].shape[0]
 
 # compute the number of atoms and offset for each rank.
 # (special care for the last rank)
@@ -50,9 +56,9 @@ comm.Barrier()
 # loop over steps
 step = reader.current_step()
 while step >= 0:
-    x_val = reader.read_variable('LX', start=[offset], count=[localatoms])
-    y_val = reader.read_variable('LY', start=[offset], count=[localatoms])
-    z_val = reader.read_variable('LZ', start=[offset], count=[localatoms])
+    x_val = reader.read_variable('WLX', start=[offset], count=[localatoms])
+    y_val = reader.read_variable('WLY', start=[offset], count=[localatoms])
+    z_val = reader.read_variable('WLZ', start=[offset], count=[localatoms])
     #print("{}:{} {}, {}, {}".format(rank, step, len(x_val), len(y_val), len(z_val)))
 
     if rank == 0:
