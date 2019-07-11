@@ -11,7 +11,7 @@
         integer :: lsa, tsa, osa 
 
         ! MPI 'world' for this app variables
-        integer :: app_comm
+        integer*4 :: app_comm
         integer :: rank, nproc
-        integer :: ierr
+        integer*4 :: ierr
       end module sp_io_vars
