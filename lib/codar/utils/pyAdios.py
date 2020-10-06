@@ -36,6 +36,7 @@ def get_npdtype(t:str):
     elif t == "short":                  return np.dtype(np.int16)
     elif t == "unsinged short":         return np.dtype(np.uint16)
     elif t == "int":                    return np.dtype(np.int32)
+    elif t == "int32_t":                return np.dtype(np.int32)
     elif t == "unsigned int":           return np.dtype(np.uint32)
     elif t == "long int":               return np.dtype(np.int64)
     elif t == "long long int":          return np.dtype(np.int64)
