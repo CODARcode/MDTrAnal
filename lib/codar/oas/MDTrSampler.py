@@ -10,7 +10,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.utils.extmath import svd_flip, randomized_svd
 
 from scipy.sparse.linalg import svds
-from scipy.misc import imfilter
+#from scipy.misc import imfilter
 import scipy.ndimage as ndi
 
 import scipy.io
